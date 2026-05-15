@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPHTC · Módulo 7 · Triage y Traslado · RCP302</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#C0392B;--red-mid:#E74C3C;--red-lt:#FDF0EF;
+  --amber:#D35400;--amber-lt:#FEF5EC;
+  --green:#1A6B3A;--green-lt:#EBF7EF;
+  --blue:#1A3A5C;--blue-mid:#2471A3;--blue-lt:#EBF4FB;
+  --teal:#0E6655;--teal-lt:#E8F8F5;
+  --purple:#6C3483;--purple-lt:#F5EEF8;
+  --dark:#111820;--mid:#2C3E50;
+  --gray1:#F4F6F8;--gray2:#E0E5EA;--gray3:#8899A6;
+  --white:#FFFFFF;
+  --fh:'Bebas Neue',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:#EAECF0;color:var(--dark)}
+.hero{background:var(--dark);padding:3rem 2rem 2.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-55deg,transparent 0,transparent 18px,rgba(192,57,43,.06) 18px,rgba(192,57,43,.06) 19px)}
+.hero::after{content:'TRIAGE';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:var(--fh);font-size:10rem;line-height:1;color:rgba(255,255,255,.03);pointer-events:none;user-select:none}
+.hero-inner{position:relative;z-index:1;max-width:880px;margin:0 auto}
+.hero-brand{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem;flex-wrap:wrap}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:var(--white);font-family:var(--fm);font-size:11px;letter-spacing:.08em;padding:5px 14px;border-radius:3px}
+.hero-co{font-family:var(--fm);font-size:11px;color:var(--gray3);letter-spacing:.06em;padding:5px 14px;border:1px solid rgba(255,255,255,.1);border-radius:3px}
+.hero h1{font-family:var(--fh);font-size:clamp(2.4rem,5.5vw,4.2rem);line-height:.95;color:var(--white);letter-spacing:.02em;margin-bottom:.5rem}
+.hero h1 em{color:var(--red-mid);font-style:normal}
+.hero-sub{font-size:.93rem;color:var(--gray3);max-width:520px;line-height:1.65;margin-bottom:1.8rem}
+.hero-meta{display:flex;gap:1.4rem;flex-wrap:wrap}
+.hm{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--gray3);font-family:var(--fm)}
+.hm strong{color:var(--white)}
+.nav-wrap{background:var(--white);border-bottom:1px solid var(--gray2);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.nav{max-width:880px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:.5rem 1rem;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nb{flex-shrink:0;padding:7px 16px;border-radius:20px;border:none;background:none;font-family:var(--fb);font-size:12.5px;font-weight:500;color:var(--gray3);cursor:pointer;transition:all .2s;white-space:nowrap}
+.nb:hover{background:var(--gray1);color:var(--dark)}
+.nb.active{background:var(--red);color:var(--white)}
+.main{max-width:880px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.section{display:none}.section.active{display:block;animation:fadeUp .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sec-tag{display:inline-block;font-family:var(--fm);font-size:10px;letter-spacing:.08em;padding:3px 10px;border-radius:3px;background:var(--dark);color:var(--white);margin-bottom:1rem}
+.block-title{display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--gray2)}
+.block-num{font-family:var(--fh);font-size:3.2rem;line-height:1;color:var(--gray2)}
+.block-title-text h2{font-family:var(--fh);font-size:2rem;letter-spacing:.03em;color:var(--dark);line-height:1}
+.block-title-text p{font-size:13px;color:var(--gray3);margin-top:3px}
+.lead{font-size:14.5px;line-height:1.75;color:var(--mid);border-left:3px solid var(--red);padding-left:1rem;margin-bottom:1.8rem}
+.sub-head{font-family:var(--fh);font-size:1.25rem;letter-spacing:.04em;color:var(--dark);margin:1.6rem 0 .8rem;display:flex;align-items:center;gap:10px}
+.sub-head::after{content:'';flex:1;height:1px;background:var(--gray2)}
+.cards{display:grid;gap:12px;margin-bottom:1.4rem}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:600px){.c2,.c3,.c4{grid-template-columns:1fr}}
+.card{background:var(--white);border-radius:10px;border:1px solid var(--gray2);padding:1.1rem 1.2rem;transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07);transform:translateY(-2px)}
+.card-icon{font-size:1.4rem;margin-bottom:.5rem}
+.card h3{font-size:13.5px;font-weight:600;margin-bottom:.35rem}
+.card p{font-size:12.5px;line-height:1.55;color:var(--gray3)}
+.card.ar{border-top:3px solid var(--red)}.card.aa{border-top:3px solid var(--amber)}
+.card.ag{border-top:3px solid var(--green)}.card.ab{border-top:3px solid var(--blue-mid)}
+.card.ap{border-top:3px solid var(--purple)}.card.at{border-top:3px solid var(--teal)}
+.alert{border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.2rem;font-size:13.5px;line-height:1.6;border-left:4px solid}
+.a-red{background:var(--red-lt);border-color:var(--red);color:#7B241C}
+.a-amb{background:var(--amber-lt);border-color:var(--amber);color:#784212}
+.a-grn{background:var(--green-lt);border-color:var(--green);color:#145A32}
+.a-blu{background:var(--blue-lt);border-color:var(--blue-mid);color:#1A5276}
+.a-pur{background:var(--purple-lt);border-color:var(--purple);color:#4A235A}
+.a-tel{background:var(--teal-lt);border-color:var(--teal);color:#0E6655}
+.kp{list-style:none;margin-bottom:1.4rem}
+.kp li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--gray2);font-size:13.5px;line-height:1.55;color:var(--mid)}
+.kp li:last-child{border-bottom:none}
+.kp-dot{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;margin-top:1px;color:var(--white)}
+.tbl{width:100%;border-collapse:collapse;margin-bottom:1.4rem;font-size:13px}
+.tbl thead th{background:var(--dark);color:var(--white);padding:8px 12px;text-align:left;font-weight:600;font-size:12px}
+.tbl tbody tr:nth-child(even){background:var(--gray1)}
+.tbl tbody td{padding:8px 12px;border-bottom:1px solid var(--gray2);line-height:1.5;vertical-align:top}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;font-family:var(--fm)}
+.t-red{background:var(--red-lt);color:var(--red)}.t-grn{background:var(--green-lt);color:var(--green)}
+.t-amb{background:var(--amber-lt);color:var(--amber)}.t-pur{background:var(--purple-lt);color:var(--purple)}
+.t-blu{background:var(--blue-lt);color:var(--blue-mid)}
+.step-num-card{display:flex;gap:14px;align-items:flex-start;background:var(--white);border:1px solid var(--gray2);border-radius:10px;padding:1rem 1.2rem;margin-bottom:10px}
+.step-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--white);flex-shrink:0}
+.step-content h4{font-size:13.5px;font-weight:600;margin-bottom:3px}
+.step-content p{font-size:13px;color:var(--gray3);line-height:1.55}
+/* Triage categories */
+.triage-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.4rem}
+@media(max-width:600px){.triage-cats{grid-template-columns:1fr 1fr}}
+.triage-cat{border-radius:10px;padding:1rem;text-align:center;border:2px solid}
+.triage-cat .cat-num{font-family:var(--fh);font-size:2.2rem;line-height:1;margin-bottom:4px}
+.triage-cat .cat-name{font-size:12px;font-weight:600;margin-bottom:4px}
+.triage-cat .cat-desc{font-size:11px;line-height:1.4}
+.cat-1{background:#FFF8E1;border-color:#F57F17;color:#E65100}
+.cat-2{background:#FCE4EC;border-color:#C62828;color:#B71C1C}
+.cat-3{background:#E8F5E9;border-color:#2E7D32;color:#1B5E20}
+.cat-4{background:#ECEFF1;border-color:#546E7A;color:#37474F}
+/* Algorithm */
+.algo{display:flex;flex-direction:column;align-items:center;gap:0;margin-bottom:1.8rem}
+.algo-box{width:100%;max-width:540px;border-radius:8px;padding:.75rem 1.2rem;text-align:center;font-size:13px;font-weight:500}
+.algo-arrow{font-size:20px;color:var(--gray3);margin:2px 0;line-height:1}
+.algo-diamond{width:100%;max-width:540px;background:var(--amber-lt);border:2px solid var(--amber);border-radius:8px;padding:.75rem 1.2rem;text-align:center;font-size:13px;font-weight:600;color:var(--amber)}
+.algo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:540px}
+/* ATMIST */
+.atmist-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:1.4rem}
+@media(max-width:600px){.atmist-grid{grid-template-columns:1fr 1fr 1fr}}
+.atmist-card{border-radius:8px;padding:.8rem .6rem;text-align:center;border:1px solid var(--gray2);background:var(--white)}
+.atmist-letter{font-family:var(--fh);font-size:2rem;line-height:1;margin-bottom:4px}
+.atmist-word{font-size:10px;font-weight:600;font-family:var(--fm);letter-spacing:.04em;margin-bottom:3px}
+.atmist-desc{font-size:10.5px;color:var(--gray3);line-height:1.4}
+/* Quiz */
+.quiz-card{background:var(--white);border:1px solid var(--gray2);border-radius:10px;padding:1.3rem;margin-bottom:10px}
+.quiz-q{font-size:14px;font-weight:600;margin-bottom:1rem}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{padding:9px 14px;border-radius:6px;border:1.5px solid var(--gray2);background:var(--gray1);cursor:pointer;font-size:13px;transition:all .15s;text-align:left}
+.quiz-opt:hover:not(.disabled){border-color:var(--blue-mid);background:var(--blue-lt)}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-lt);color:var(--green);font-weight:500}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-lt);color:var(--red)}
+.quiz-opt.disabled{cursor:default}
+.quiz-fb{margin-top:.8rem;padding:.7rem 1rem;border-radius:6px;font-size:13px;line-height:1.55;display:none}
+.quiz-fb.show{display:block}
+.quiz-score{background:var(--dark);color:var(--white);border-radius:10px;padding:1.2rem 1.5rem;text-align:center;display:none;margin-top:1rem}
+.quiz-score .sv{font-family:var(--fh);font-size:3rem;color:var(--red-mid)}
+.btn-quiz{margin-top:1rem;padding:9px 20px;border-radius:6px;border:none;background:var(--red);color:var(--white);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer}
+.btn-quiz.sec{background:var(--gray1);color:var(--dark);border:1px solid var(--gray2)}
+.doc-footer{max-width:880px;margin:0 auto;padding:.8rem 1.5rem 2rem;font-size:11px;color:var(--gray3);border-top:1px solid var(--gray2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-brand">
+      <div class="hero-tag">EPHTC · MÓDULO 7</div>
+      <div class="hero-co">RCP302 FORMACIÓN EN EMERGENCIAS</div>
+      <div class="hero-co" style="border-color:rgba(231,76,60,.4);color:#E88080;">IPMI OFFICIAL COURSE</div>
+    </div>
+    <h1>Triage, <em>Traslado</em><br>y Comunicación<br>ATMIST</h1>
+    <p class="hero-sub">START, SALT, MPTT y triage secundario. PCR traumática ERC 2021. ATMIST con ejemplos reales. Criterios HEMS, decisión de hospital receptor, gestión de recursos en IMV y comunicación con el centro coordinador.</p>
+    <div class="hero-meta">
+      <div class="hm">🚨 <strong>4 sistemas de triage</strong></div>
+      <div class="hm">🚁 <strong>Criterios HEMS</strong></div>
+      <div class="hm">📡 <strong>ATMIST con ejemplos</strong></div>
+      <div class="hm">✅ <strong>Autoevaluación</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <nav class="nav" role="tablist">
+    <button class="nb active" onclick="show(0)">🚨 Triage START</button>
+    <button class="nb" onclick="show(1)">🔄 SALT y MPTT</button>
+    <button class="nb" onclick="show(2)">🏥 Triage secundario</button>
+    <button class="nb" onclick="show(3)">🚑 PCR traumática</button>
+    <button class="nb" onclick="show(4)">📡 ATMIST</button>
+    <button class="nb" onclick="show(5)">🚁 Criterios HEMS</button>
+    <button class="nb" onclick="show(6)">🏥 Hospital receptor</button>
+    <button class="nb" onclick="show(7)">📞 Centro coordinador</button>
+    <button class="nb" onclick="show(8)">👥 Gestión IMV</button>
+    <button class="nb" onclick="show(9)">✅ Autoevaluación</button>
+  </nav>
+</div>
+
+<main class="main">
+
+<!-- ══ 0 · TRIAGE START ══ -->
+<div class="section active" id="sec-0">
+  <span class="sec-tag">MÓDULO 7 · TRIAGE START</span>
+  <div class="block-title">
+    <div class="block-num">7A</div>
+    <div class="block-title-text">
+      <h2>Triage START</h2>
+      <p>Simple Triage And Rapid Treatment — el estándar prehospitalario en IMV</p>
+    </div>
+  </div>
+
+  <p class="lead">El triage START (Simple Triage And Rapid Treatment) es el sistema de clasificación de víctimas más utilizado en incidentes de múltiples víctimas (IMV) a nivel mundial. Permite clasificar cada víctima en menos de 60 segundos usando tres parámetros fisiológicos: ventilación, perfusión y estado neurológico.</p>
+
+  <div class="alert a-red">
+    <strong>🚨 Principio fundamental del triage:</strong> el triage no busca salvar a los más graves — busca <strong>maximizar el número de supervivientes</strong> con los recursos disponibles. La categoría NEGRO (expectante) no significa abandono — significa que los recursos limitados se destinan a quien más se puede beneficiar de ellos.
+  </div>
+
+  <div class="sub-head">Las 4 categorías de triage</div>
+  <div class="triage-cats">
+    <div class="triage-cat cat-1">
+      <div class="cat-num">I</div>
+      <div class="cat-name">🟡 AMARILLO</div>
+      <div class="cat-desc"><strong>Diferido</strong><br>Lesiones graves pero estables. Puede esperar. Reevaluar periódicamente.</div>
+    </div>
+    <div class="triage-cat cat-2">
+      <div class="cat-num">II</div>
+      <div class="cat-name">🔴 ROJO</div>
+      <div class="cat-desc"><strong>Inmediato</strong><br>Amenaza vital tratable. Requiere atención en minutos. Máxima prioridad.</div>
+    </div>
+    <div class="triage-cat cat-3">
+      <div class="cat-num">III</div>
+      <div class="cat-name">🟢 VERDE</div>
+      <div class="cat-desc"><strong>Menor</strong><br>Lesiones leves. Puede caminar. Atención diferida o autotratamiento.</div>
+    </div>
+    <div class="triage-cat cat-4">
+      <div class="cat-num">IV</div>
+      <div class="cat-name">⚫ NEGRO</div>
+      <div class="cat-desc"><strong>Expectante / Muerto</strong><br>Sin signos de vida o lesión incompatible con supervivencia con recursos disponibles.</div>
+    </div>
+  </div>
+
+  <div class="sub-head">Algoritmo START — Secuencia de evaluación</div>
+  <div class="algo">
+    <div class="algo-box" style="background:var(--dark);color:var(--white);">VÍCTIMA — Iniciar evaluación START (&lt;60 segundos)</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-diamond">¿Puede caminar?</div>
+    <div class="algo-row">
+      <div>
+        <div class="algo-arrow">↓ SÍ</div>
+        <div class="algo-box" style="background:var(--green-lt);border:2px solid var(--green);color:var(--green);font-weight:600;">🟢 VERDE — Menor<br>Enviar a zona de concentración</div>
+      </div>
+      <div>
+        <div class="algo-arrow">↓ NO</div>
+        <div class="algo-diamond">¿Respira?</div>
+      </div>
+    </div>
+    <div class="algo-arrow" style="margin-top:8px">↓</div>
+    <div class="algo-row">
+      <div>
+        <div class="algo-arrow">↓ NO</div>
+        <div class="algo-box" style="background:var(--gray1);border:2px solid var(--gray3);color:var(--gray3);">Abrir vía aérea (tracción mandibular)</div>
+        <div class="algo-arrow">↓</div>
+        <div class="algo-diamond">¿Respira ahora?</div>
+        <div class="algo-row" style="margin-top:4px">
+          <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red);color:var(--red);font-weight:600;font-size:11px;">⚫ NEGRO si no respira</div>
+          <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red-mid);color:var(--red-mid);font-weight:600;font-size:11px;">🔴 ROJO si respira tras apertura</div>
+        </div>
+      </div>
+      <div>
+        <div class="algo-arrow">↓ SÍ</div>
+        <div class="algo-diamond">FR &lt;30 rpm?</div>
+        <div class="algo-arrow">↓ NO (&gt;30 rpm)</div>
+        <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red-mid);color:var(--red-mid);font-weight:600;">🔴 ROJO — Inmediato</div>
+        <div class="algo-arrow">↓ SÍ (&lt;30 rpm)</div>
+        <div class="algo-diamond">¿Pulso radial presente?</div>
+        <div class="algo-row" style="margin-top:4px">
+          <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red-mid);color:var(--red-mid);font-weight:600;font-size:11px;">🔴 ROJO si no hay pulso</div>
+          <div class="algo-diamond" style="font-size:11px">¿Obedece órdenes?</div>
+        </div>
+      </div>
+    </div>
+    <div class="algo-arrow" style="margin-top:8px">↓</div>
+    <div class="algo-row">
+      <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red-mid);color:var(--red-mid);font-weight:600;">🔴 ROJO si no obedece</div>
+      <div class="algo-box" style="background:var(--amber-lt);border:2px solid var(--amber);color:var(--amber);font-weight:600;">🟡 AMARILLO si obedece</div>
+    </div>
+  </div>
+
+  <div class="sub-head">Puntos clave del triage START</div>
+  <ul class="kp">
+    <li><div class="kp-dot" style="background:var(--red)">!</div><div><strong>Máximo 60 segundos por víctima:</strong> si tardas más, el triage deja de ser útil. La rapidez es más importante que la precisión individual — el objetivo es clasificar a todos antes de tratar a ninguno.</div></li>
+    <li><div class="kp-dot" style="background:var(--red)">!</div><div><strong>No tratar durante el triage primario:</strong> la única excepción es la apertura de vía aérea (maniobra de 5 segundos) y la aplicación de torniquetes en hemorragias exsanguinantes evidentes. Toda otra intervención espera.</div></li>
+    <li><div class="kp-dot" style="background:var(--amber)">!</div><div><strong>Reevaluar periódicamente:</strong> las categorías pueden cambiar. Un AMARILLO puede convertirse en ROJO si no recibe atención. Establecer circuitos de reevaluación desde el inicio.</div></li>
+    <li><div class="kp-dot" style="background:var(--green)">!</div><div><strong>Los VERDES son un recurso:</strong> las víctimas leves pueden ayudar a guiar a los AMARILLOS a la zona de concentración, liberando recursos sanitarios para los ROJOS.</div></li>
+  </ul>
+</div>
+
+<!-- ══ 1 · SALT Y MPTT ══ -->
+<div class="section" id="sec-1">
+  <span class="sec-tag">MÓDULO 7 · SALT Y MPTT</span>
+  <div class="block-title">
+    <div class="block-num">7B</div>
+    <div class="block-title-text">
+      <h2>Triage SALT y MPTT</h2>
+      <p>Alternativas al START — SALT (civil) y MPTT (militar/táctico)</p>
+    </div>
+  </div>
+
+  <p class="lead">El START no es el único sistema de triage. El SALT incorpora el control de hemorragias como primer paso y es más adecuado para entornos con alta prevalencia de trauma penetrante. El MPTT (Military Prehospital Triage Tool) está optimizado para entornos tácticos con múltiples heridos simultáneos y recursos extremadamente limitados.</p>
+
+  <div class="sub-head">Triage SALT — Sort, Assess, Lifesaving Interventions, Treatment/Transport</div>
+  <div class="cards c2">
+    <div class="card ab">
+      <div class="card-icon">🔄</div>
+      <h3>¿Qué diferencia al SALT del START?</h3>
+      <p>El SALT añade un <strong>paso previo global</strong> antes de evaluar individualmente: pide a todas las víctimas que se muevan a una zona de concentración. Las que no se mueven son evaluadas primero. Además, incorpora explícitamente las <strong>intervenciones de salvamento de vida</strong> (torniquetes, apertura de vía aérea, descompresión torácica) como parte del triage, no como tratamiento posterior.</p>
+    </div>
+    <div class="card ab">
+      <div class="card-icon">📋</div>
+      <h3>Las 4 fases del SALT</h3>
+      <p><strong>S — Sort:</strong> clasificación global por movimiento/obediencia a órdenes.<br>
+      <strong>A — Assess:</strong> evaluación individual de cada víctima inmovilizada.<br>
+      <strong>L — Lifesaving Interventions:</strong> intervenciones mínimas de supervivencia (torniquete, apertura VA, descompresión).<br>
+      <strong>T — Treatment/Transport:</strong> tratamiento y traslado según categoría.</p>
+    </div>
+  </div>
+
+  <div class="sub-head">Categorías SALT — Más granulares que el START</div>
+  <table class="tbl">
+    <thead><tr><th>Categoría SALT</th><th>Color</th><th>Criterio</th><th>Equivalente START</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Immediate</strong></td><td><span class="tag t-red">🔴 ROJO</span></td><td>Amenaza vital — sobrevivirá con intervención mínima</td><td>ROJO</td></tr>
+      <tr><td><strong>Delayed</strong></td><td><span class="tag t-amb">🟡 AMARILLO</span></td><td>Puede esperar sin deterioro inmediato</td><td>AMARILLO</td></tr>
+      <tr><td><strong>Minimal</strong></td><td><span class="tag t-grn">🟢 VERDE</span></td><td>Lesiones menores — puede ayudar</td><td>VERDE</td></tr>
+      <tr><td><strong>Expectant</strong></td><td><span class="tag" style="background:var(--purple-lt);color:var(--purple)">🟣 MORADO</span></td><td>Sobreviviría solo con recursos extensos no disponibles en el IMV</td><td>Parte del NEGRO</td></tr>
+      <tr><td><strong>Dead</strong></td><td><span class="tag" style="background:var(--gray1);color:var(--gray3)">⚫ NEGRO</span></td><td>Sin signos de vida tras apertura de VA</td><td>NEGRO</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert a-pur">
+    <strong>💡 La categoría EXPECTANT del SALT:</strong> diferencia entre el muerto (negro) y el que podría sobrevivir con recursos masivos no disponibles (expectante/morado). Esta distinción es éticamente importante y operativamente útil cuando los recursos mejoran — un expectante puede pasar a inmediato si llegan refuerzos.
+  </div>
+
+  <div class="sub-head">Triage MPTT — Military Prehospital Triage Tool</div>
+  <div class="cards c2">
+    <div class="card ap">
+      <div class="card-icon">🪖</div>
+      <h3>Contexto de aplicación</h3>
+      <p>Desarrollado para entornos tácticos (TCCC, TECC) donde los recursos son extremadamente limitados, la seguridad de la escena es dinámica y puede haber bajas simultáneas masivas. También aplicable en atentados terroristas y situaciones de tirador activo.</p>
+    </div>
+    <div class="card ap">
+      <div class="card-icon">⚡</div>
+      <h3>Diferencias clave con START/SALT</h3>
+      <p>Mayor énfasis en el control de hemorragias como intervención de triage (no solo de tratamiento). Categoría específica para heridas potencialmente letales sin tratamiento (T1). Considera la seguridad del rescatador como variable del triage. Protocolos de extracción bajo fuego.</p>
+    </div>
+  </div>
+
+  <div class="sub-head">Comparativa rápida — ¿Cuándo usar cada sistema?</div>
+  <table class="tbl">
+    <thead><tr><th>Sistema</th><th>Mejor para</th><th>Velocidad</th><th>Intervenciones incluidas</th></tr></thead>
+    <tbody>
+      <tr><td><strong>START</strong></td><td>IMV civil estándar (accidentes, desastres)</td><td><span class="tag t-grn">Muy rápido</span></td><td>Solo apertura VA</td></tr>
+      <tr><td><strong>SALT</strong></td><td>IMV con alta prevalencia de trauma penetrante</td><td><span class="tag t-amb">Moderado</span></td><td>Torniquete + VA + descompresión</td></tr>
+      <tr><td><strong>MPTT</strong></td><td>Entorno táctico, tirador activo, atentado</td><td><span class="tag t-grn">Muy rápido</span></td><td>Control hemorragia como prioridad 1</td></tr>
+      <tr><td><strong>START + SALT combinado</strong></td><td>IMV con componente penetrante y recursos mixtos</td><td><span class="tag t-amb">Moderado</span></td><td>Máxima cobertura</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 2 · TRIAGE SECUNDARIO ══ -->
+<div class="section" id="sec-2">
+  <span class="sec-tag">MÓDULO 7 · TRIAGE SECUNDARIO</span>
+  <div class="block-title">
+    <div class="block-num">7C</div>
+    <div class="block-title-text">
+      <h2>Triage Secundario</h2>
+      <p>Reevaluación, Triage Revised Trauma Score (RTS) y triage hospitalario</p>
+    </div>
+  </div>
+
+  <p class="lead">El triage secundario es la reevaluación más detallada que se realiza una vez completado el triage primario START/SALT y cuando los recursos permiten una evaluación más profunda. Permite reclasificar víctimas que han cambiado su estado y priorizar el orden de traslado hacia los centros hospitalarios.</p>
+
+  <div class="sub-head">¿Cuándo se realiza el triage secundario?</div>
+  <ul class="kp">
+    <li><div class="kp-dot" style="background:var(--blue-mid)">1</div><div><strong>Cuando todos los pacientes han sido clasificados en el triage primario:</strong> ningún paciente sin clasificar antes de iniciar el secundario.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">2</div><div><strong>Cuando hay suficientes recursos:</strong> personal suficiente para mantener el triage primario activo mientras se realiza el secundario en la zona de tratamiento.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">3</div><div><strong>Antes de cada traslado:</strong> reevaluar al paciente inmediatamente antes de colocarlo en el vehículo — su estado puede haber cambiado desde la clasificación inicial.</div></li>
+  </ul>
+
+  <div class="sub-head">Revised Trauma Score (RTS) — Herramienta de triage secundario</div>
+  <table class="tbl">
+    <thead><tr><th>Parámetro</th><th>Valor</th><th>Puntuación</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="5"><strong>GCS</strong></td><td>13-15</td><td>4</td></tr>
+      <tr><td>9-12</td><td>3</td></tr>
+      <tr><td>6-8</td><td>2</td></tr>
+      <tr><td>4-5</td><td>1</td></tr>
+      <tr><td>3</td><td>0</td></tr>
+      <tr><td rowspan="5"><strong>TAS (mmHg)</strong></td><td>≥ 90</td><td>4</td></tr>
+      <tr><td>76-89</td><td>3</td></tr>
+      <tr><td>50-75</td><td>2</td></tr>
+      <tr><td>1-49</td><td>1</td></tr>
+      <tr><td>0</td><td>0</td></tr>
+      <tr><td rowspan="5"><strong>FR (rpm)</strong></td><td>10-29</td><td>4</td></tr>
+      <tr><td>≥ 30</td><td>3</td></tr>
+      <tr><td>6-9</td><td>2</td></tr>
+      <tr><td>1-5</td><td>1</td></tr>
+      <tr><td>0</td><td>0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert a-blu">
+    <strong>RTS total (0-12):</strong> RTS ≥ 11 → bajo riesgo. RTS 8-10 → riesgo moderado. RTS ≤ 7 → alto riesgo (criterio de activación de trauma mayor en muchos sistemas). RTS = 0 → muy alta mortalidad. Se calcula como suma ponderada: RTS = 0,9368·GCS + 0,7326·TAS + 0,2908·FR.
+  </div>
+
+  <div class="sub-head">Triage hospitalario — Información al hospital receptor</div>
+  <div class="cards c2">
+    <div class="card ag"><div class="card-icon">📋</div><h3>Información mínima requerida</h3><p>Número total de víctimas por categoría (ROJO x, AMARILLO x, VERDE x). Número de trasladados a cada centro. ETA de cada vehículo. Lesiones principales de cada ROJO. Necesidades especiales (neurocirugía, quemados, obstétrica).</p></div>
+    <div class="card ag"><div class="card-icon">🏥</div><h3>Distribución de pacientes</h3><p>No enviar todos los ROJOS al hospital más cercano — colapsa el servicio. Distribuir proporcionalmente entre todos los centros disponibles. Los VERDES pueden ir a centros de menor nivel. Los ROJOS con necesidades especiales (neuro, quemados) van al centro específico.</p></div>
+  </div>
+</div>
+
+<!-- ══ 3 · PCR TRAUMÁTICA ══ -->
+<div class="section" id="sec-3">
+  <span class="sec-tag">MÓDULO 7 · PCR TRAUMÁTICA</span>
+  <div class="block-title">
+    <div class="block-num">7D</div>
+    <div class="block-title-text">
+      <h2>PCR Traumática — Algoritmo ERC 2021</h2>
+      <p>Parada cardiaca traumática — las causas reversibles y el orden de actuación</p>
+    </div>
+  </div>
+
+  <p class="lead">La PCR traumática tiene una fisiopatología radicalmente diferente a la médica. Las compresiones torácicas son secundarias al tratamiento de las causas reversibles. Sin tratar la causa, la RCP estándar es ineficaz. El orden correcto es: <strong>X → A → B (toracostomía bilateral) → C → D.</strong></p>
+
+  <div class="sub-head">Las 4H del trauma — Causas reversibles</div>
+  <div class="cards c2">
+    <div class="card ar"><div class="card-icon">🩸</div><h3>Hipovolemia (hemorragia)</h3><p>Causa más frecuente. Torniquetes + traslado urgente. La resucitación volémica no sustituye al quirófano.</p></div>
+    <div class="card ar"><div class="card-icon">💨</div><h3>Hipoxia (neumotórax a tensión)</h3><p>Toracostomía bilateral inmediata. No esperar signos clínicos — bilateral sin excepción.</p></div>
+    <div class="card ar"><div class="card-icon">❤️</div><h3>Taponamiento cardíaco</h3><p>Trauma penetrante. Pericardiocentesis subxifoidea como puente. Toracotomía de resucitación en HEMS.</p></div>
+    <div class="card ar"><div class="card-icon">🌡️</div><h3>Hipotermia severa</h3><p>"Ningún paciente está muerto hasta que está caliente y muerto." Continuar RCP hasta recalentamiento.</p></div>
+  </div>
+
+  <div class="sub-head">Algoritmo PCR traumática — ERC 2021</div>
+  <div class="algo">
+    <div class="algo-box" style="background:var(--red);color:var(--white);font-weight:600;">PCR TRAUMÁTICA — Sin pulso + sin respiración</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-diamond">¿Signos de vida? ¿Mecanismo superviviente?</div>
+    <div class="algo-arrow">↓ SÍ — Iniciar RCP</div>
+    <div class="algo-box" style="background:var(--red-lt);border:2px solid var(--red);color:var(--red);font-weight:600;">X — Torniquetes en hemorragia exsanguinante</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-box" style="background:var(--amber-lt);border:1.5px solid var(--amber);color:var(--amber);">A — iGel o IOT + ventilación O2 100%</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-box" style="background:var(--blue-lt);border:2px solid var(--blue-mid);color:var(--blue-mid);font-weight:700;">B — TORACOSTOMÍA BILATERAL INMEDIATA (OT preferida)</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-box" style="background:var(--red-lt);border:1.5px solid var(--red-mid);color:var(--red-mid);">C — Acceso IV/IO · Adrenalina 1 mg/4 min · Compresiones continuas</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-box" style="background:var(--purple-lt);border:1.5px solid var(--purple);color:var(--purple);">¿Taponamiento? → Pericardiocentesis · ¿FV/TVSP? → Desfibrilar · ¿Hipotermia? → RCP + recalentar</div>
+    <div class="algo-arrow">↓</div>
+    <div class="algo-diamond">¿ROSC tras 10-15 min?</div>
+    <div class="algo-arrow">↓ NO</div>
+    <div class="algo-box" style="background:var(--gray1);border:1.5px solid var(--gray2);color:var(--gray3);">Valorar futilidad · Consultar protocolo + centro coordinador</div>
+  </div>
+
+  <div class="alert a-amb">
+    <strong>⚠ Cuándo NO iniciar RCP en PCR-T:</strong> decapitación, hemicorporectomía, rigidez cadavérica, livideces establecidas, quemaduras &gt;95% SCQ, destrucción masiva de órganos vitales. Asistolia en trauma contuso de alta energía sin causa tratable: consultar protocolo local.
+  </div>
+</div>
+
+<!-- ══ 4 · ATMIST ══ -->
+<div class="section" id="sec-4">
+  <span class="sec-tag">MÓDULO 7 · ATMIST</span>
+  <div class="block-title">
+    <div class="block-num">7E</div>
+    <div class="block-title-text">
+      <h2>Comunicación ATMIST</h2>
+      <p>El pre-aviso estructurado que prepara al hospital antes de tu llegada</p>
+    </div>
+  </div>
+
+  <p class="lead">El ATMIST es el formato estándar de pre-aviso prehospitalario al hospital receptor. Un ATMIST bien construido permite al equipo hospitalario preparar el quirófano, activar el equipo de trauma y tener todo listo antes de que el paciente cruce la puerta de urgencias. Un ATMIST incompleto puede costar minutos críticos.</p>
+
+  <div class="sub-head">Los 6 componentes del ATMIST</div>
+  <div class="atmist-grid">
+    <div class="atmist-card" style="border-top:3px solid var(--red)">
+      <div class="atmist-letter" style="color:var(--red)">A</div>
+      <div class="atmist-word">AGE / EDAD</div>
+      <div class="atmist-desc">Edad y sexo. Peso si es pediátrico.</div>
+    </div>
+    <div class="atmist-card" style="border-top:3px solid var(--amber)">
+      <div class="atmist-letter" style="color:var(--amber)">T</div>
+      <div class="atmist-word">TIME / TIEMPO</div>
+      <div class="atmist-desc">Hora del accidente. ETA al hospital.</div>
+    </div>
+    <div class="atmist-card" style="border-top:3px solid var(--blue-mid)">
+      <div class="atmist-letter" style="color:var(--blue-mid)">M</div>
+      <div class="atmist-word">MECHANISM</div>
+      <div class="atmist-desc">Mecanismo lesional. Velocidad. Tipo de impacto.</div>
+    </div>
+    <div class="atmist-card" style="border-top:3px solid var(--purple)">
+      <div class="atmist-letter" style="color:var(--purple)">I</div>
+      <div class="atmist-word">INJURIES</div>
+      <div class="atmist-desc">Lesiones identificadas. Sospechas clínicas.</div>
+    </div>
+    <div class="atmist-card" style="border-top:3px solid var(--green)">
+      <div class="atmist-letter" style="color:var(--green)">S</div>
+      <div class="atmist-word">SIGNS</div>
+      <div class="atmist-desc">Constantes vitales. GCS. SpO2. TAS. FC. ETCO2.</div>
+    </div>
+    <div class="atmist-card" style="border-top:3px solid var(--teal)">
+      <div class="atmist-letter" style="color:var(--teal)">T</div>
+      <div class="atmist-word">TREATMENT</div>
+      <div class="atmist-desc">Procedimientos realizados. Fármacos y dosis. Hora.</div>
+    </div>
+  </div>
+
+  <div class="sub-head">Ejemplo completo de ATMIST — Caso del Módulo 3</div>
+  <div style="background:var(--white);border:1px solid var(--gray2);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.4rem;font-family:var(--fm);font-size:12px;line-height:1.8;color:var(--dark)">
+    <p style="font-size:11px;color:var(--gray3);margin-bottom:8px;font-family:var(--fb)">Ejemplo basado en el caso clínico del Módulo 3 — AVP con neumotórax a tensión:</p>
+    <p><span style="color:var(--red);font-weight:600">A —</span> Varón, 38 años, 85 kg estimados.</p>
+    <p><span style="color:var(--amber);font-weight:600">T —</span> Hora del accidente 14:32 h. ETA hospital: 12 minutos en HEMS.</p>
+    <p><span style="color:var(--blue-mid);font-weight:600">M —</span> AVP de alta energía. Impacto frontal a 110 km/h contra camión. Deformación del habitáculo y del volante. Airbag desplegado. Cinturón puesto.</p>
+    <p><span style="color:var(--purple);font-weight:600">I —</span> Neumotórax a tensión derecho drenado (OT 4.º-5.º EIC LAD). Hemorragia externa muslo derecho controlada con torniquete (14:48 h). Sospecha hemotórax derecho. Sospecha lesión esplénica. Fractura pélvica inestable. Trauma costal derecho 4.ª-7.ª costilla.</p>
+    <p><span style="color:var(--green);font-weight:600">S —</span> GCS inicial 11, actual sedado postIOT. SpO2 94% con FiO2 100%. TAS 90 mmHg. FC 118 lpm. ETCO2 38 mmHg. FR ventilada 10 rpm.</p>
+    <p><span style="color:var(--teal);font-weight:600">T —</span> IOT: TET 8.0 a 22 cm, confirmado con ETCO2. OT derecha 4.º-5.º EIC LAD (14:51 h). NT previa fallida (14:49 h). Torniquete muslo D documentado 14:48 h. Vía IV x2. 500 ml SSF. Ketamina 170 mg + Rocuronio 100 mg IV. Midazolam 5 mg mantenimiento.</p>
+  </div>
+
+  <div class="sub-head">Errores más frecuentes en el ATMIST</div>
+  <div class="cards c3">
+    <div class="card ar"><div class="card-icon">❌</div><h3>No dar la hora del accidente</h3><p>El tiempo trauma-cirugía es el dato pronóstico más importante. Sin la hora del accidente, el hospital no puede calcular el intervalo real.</p></div>
+    <div class="card ar"><div class="card-icon">❌</div><h3>Omitir la hora del torniquete</h3><p>El equipo receptor necesita saber cuánto tiempo lleva el torniquete para planificar la retirada. Sin la hora, no pueden calcular el tiempo isquémico.</p></div>
+    <div class="card ar"><div class="card-icon">❌</div><h3>No comunicar la tendencia del GCS</h3><p>"GCS 10" no es lo mismo que "GCS que bajó de 14 a 10 en 8 minutos". La tendencia es más importante que el valor puntual.</p></div>
+  </div>
+</div>
+
+<!-- ══ 5 · CRITERIOS HEMS ══ -->
+<div class="section" id="sec-5">
+  <span class="sec-tag">MÓDULO 7 · CRITERIOS DE ACTIVACIÓN HEMS</span>
+  <div class="block-title">
+    <div class="block-num">7F</div>
+    <div class="block-title-text">
+      <h2>Criterios de Activación HEMS</h2>
+      <p>Helicóptero medicalizado — cuándo activarlo y por qué</p>
+    </div>
+  </div>
+
+  <p class="lead">El HEMS (Helicopter Emergency Medical Services) no es solo un medio de transporte más rápido — aporta un nivel de atención médica avanzada en la escena que cambia el pronóstico de determinados pacientes. La activación precoz es siempre mejor que la tardía.</p>
+
+  <div class="alert a-grn">
+    <strong>💡 Principio de activación:</strong> activar el HEMS antes de necesitarlo es siempre mejor que pedirlo tarde. Los tiempos de activación y vuelo no permiten esperar a confirmar la gravedad del paciente. Si el mecanismo sugiere gravedad, activar de inmediato.
+  </div>
+
+  <div class="sub-head">Criterios de activación HEMS — Tres niveles</div>
+  <div class="cards c3">
+    <div class="card ar">
+      <div class="card-icon">🔴</div>
+      <h3>Criterios fisiológicos (activación inmediata)</h3>
+      <p>• GCS ≤ 13<br>
+      • TAS &lt; 90 mmHg<br>
+      • FR &lt; 10 o &gt; 29 rpm<br>
+      • SpO2 &lt; 90% con O2<br>
+      • PCR traumática con signos de vida<br>
+      • Quemaduras &gt; 20% SCQ o vía aérea afectada</p>
+    </div>
+    <div class="card aa">
+      <div class="card-icon">🟡</div>
+      <h3>Criterios anatómicos (activación recomendada)</h3>
+      <p>• TCE penetrante<br>
+      • Trauma penetrante de tórax o abdomen<br>
+      • Fractura de pelvis inestable<br>
+      • Fractura de fémur bilateral<br>
+      • Amputación traumática de extremidad<br>
+      • Trauma medular con déficit neurológico</p>
+    </div>
+    <div class="card ab">
+      <div class="card-icon">🔵</div>
+      <h3>Criterios de mecanismo (activación a valorar)</h3>
+      <p>• AVP &gt; 60 km/h con eyección<br>
+      • Vuelco de vehículo<br>
+      • Fallecido en el mismo vehículo<br>
+      • Atropello a &gt; 30 km/h<br>
+      • Caída &gt; 6 metros<br>
+      • Accidente de moto &gt; 30 km/h</p>
+    </div>
+  </div>
+
+  <div class="sub-head">SVA terrestre vs HEMS — Cuándo elegir cada uno</div>
+  <table class="tbl">
+    <thead><tr><th>Factor</th><th>Favorece SVA terrestre</th><th>Favorece HEMS</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Tiempo de traslado</strong></td><td>Hospital &lt; 15 min por carretera</td><td>Hospital &gt; 30 min por carretera o HEMS &lt; tiempo SVA</td></tr>
+      <tr><td><strong>Necesidad médica avanzada</strong></td><td>SVA con médico disponible</td><td>Necesidad de médico HEMS en escena (IOT, OT, procedimientos avanzados)</td></tr>
+      <tr><td><strong>Accesibilidad</strong></td><td>Escena accesible por carretera</td><td>Zona de difícil acceso (montaña, mar, zona cortada)</td></tr>
+      <tr><td><strong>Condiciones meteorológicas</strong></td><td>Vuelo VFR no disponible</td><td>VFR disponible y ventaja de tiempo</td></tr>
+      <tr><td><strong>Hospital de destino</strong></td><td>Hospital general cercano adecuado</td><td>Centro especializado (neurocirugía, quemados, trauma) lejos</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 6 · HOSPITAL RECEPTOR ══ -->
+<div class="section" id="sec-6">
+  <span class="sec-tag">MÓDULO 7 · DECISIÓN DE HOSPITAL RECEPTOR</span>
+  <div class="block-title">
+    <div class="block-num">7G</div>
+    <div class="block-title-text">
+      <h2>Decisión de Hospital Receptor</h2>
+      <p>El hospital más cercano no siempre es el más adecuado</p>
+    </div>
+  </div>
+
+  <p class="lead">La decisión de a qué hospital trasladar es una de las más importantes del profesional prehospitalario. Un paciente que llega al hospital incorrecto pierde tiempo crítico en el traslado secundario. En algunos casos, la diferencia entre el hospital correcto y el más cercano marca la diferencia entre la vida y la muerte.</p>
+
+  <div class="sub-head">Criterios de traslado directo a centro especializado</div>
+  <table class="tbl">
+    <thead><tr><th>Lesión principal</th><th>Recurso necesario</th><th>Centro de destino</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TCE grave (GCS ≤ 8) / hematoma intracraneal</strong></td><td>Neurocirugía de guardia 24h</td><td>Hospital con neurocirugía</td></tr>
+      <tr><td><strong>Trauma penetrante de tórax / hemotórax masivo</strong></td><td>Cirugía torácica / UCI</td><td>Hospital con cirugía torácica o trauma center</td></tr>
+      <tr><td><strong>Hemorragia intraabdominal (lesión hepática/esplénica)</strong></td><td>Cirugía general urgente / radiología intervencionista</td><td>Hospital con cirugía de urgencias y angiografía</td></tr>
+      <tr><td><strong>Fractura pélvica inestable con shock</strong></td><td>Cirugía ortopédica urgente / radiología intervencionista</td><td>Hospital con embolización pélvica disponible</td></tr>
+      <tr><td><strong>Trauma medular</strong></td><td>Neurocirugía / UCI</td><td>Hospital con neurocirugía y UCI polivalente</td></tr>
+      <tr><td><strong>Quemaduras graves (&gt;20% SCQ / vía aérea)</strong></td><td>Unidad de quemados</td><td>Centro de quemados (traslado directo aunque esté lejos)</td></tr>
+      <tr><td><strong>Trauma obstétrico grave</strong></td><td>Obstetricia + UCI neonatal</td><td>Hospital con obstetricia y UCI neonatal</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-head">La regla de los 30-60 minutos</div>
+  <div class="cards c2">
+    <div class="card ar"><div class="card-icon">⏱️</div><h3>Politraumatizado inestable</h3><p>El objetivo es que el paciente inestable llegue a quirófano en menos de <strong>60 minutos desde el accidente</strong> (golden hour). Si el hospital más cercano no tiene quirófano disponible, el tiempo de traslado secundario puede superar el beneficio de estar "más cerca".</p></div>
+    <div class="card ag"><div class="card-icon">🧮</div><h3>Cálculo de la decisión</h3><p>Comparar: (tiempo hasta hospital A + tiempo de traslado secundario a centro especializado) vs (tiempo directo al centro especializado). Si la suma del primero es mayor, ir directamente al centro especializado — aunque esté más lejos.</p></div>
+  </div>
+
+  <div class="alert a-blu">
+    <strong>📞 Consejo práctico:</strong> ante la duda sobre el destino, contactar con el centro coordinador o con el hospital receptor antes de iniciar el traslado. La coordinación en tiempo real es más eficaz que la decisión individual en escena. Muchos servicios HEMS tienen protocolos de destino específicos por tipo de lesión.
+  </div>
+</div>
+
+<!-- ══ 7 · CENTRO COORDINADOR ══ -->
+<div class="section" id="sec-7">
+  <span class="sec-tag">MÓDULO 7 · COMUNICACIÓN CON CENTRO COORDINADOR</span>
+  <div class="block-title">
+    <div class="block-num">7H</div>
+    <div class="block-title-text">
+      <h2>Comunicación con el Centro Coordinador</h2>
+      <p>La central de coordinación como cerebro del sistema en el IMV</p>
+    </div>
+  </div>
+
+  <p class="lead">En un IMV, el centro coordinador es el elemento que convierte un conjunto de equipos individuales en un sistema integrado. La comunicación fluida, estructurada y bidireccional con la central es tan importante como las habilidades clínicas en la escena.</p>
+
+  <div class="sub-head">Información que el centro coordinador necesita</div>
+  <div class="cards c2">
+    <div class="card ab">
+      <div class="card-icon">📡</div>
+      <h3>Al llegar a la escena (primer informe)</h3>
+      <p>• Confirmación de llegada y seguridad de acceso<br>
+      • Número estimado de víctimas (puede ser provisional)<br>
+      • Tipo de incidente y mecanismo<br>
+      • Recursos adicionales necesarios (bomberos, HEMS, policía)<br>
+      • Punto de mando establecido y coordenadas/referencia</p>
+    </div>
+    <div class="card ab">
+      <div class="card-icon">📊</div>
+      <h3>Tras el triage primario</h3>
+      <p>• Número definitivo de víctimas por categoría<br>
+      • Recursos disponibles en escena<br>
+      • Recursos adicionales aún necesarios<br>
+      • Hospitales destino propuestos<br>
+      • ETA de los primeros traslados</p>
+    </div>
+  </div>
+
+  <div class="sub-head">Principios de comunicación en el IMV</div>
+  <ul class="kp">
+    <li><div class="kp-dot" style="background:var(--blue-mid)">1</div><div><strong>Un solo canal de comunicación por unidad:</strong> en la escena, solo el jefe de la unidad comunica con el centro coordinador. Las comunicaciones paralelas de varios operadores generan caos y duplicación de información.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">2</div><div><strong>Comunicación estructurada y breve:</strong> usar formato METHANE para el informe inicial de IMV (Major incident, Exact location, Type of incident, Hazards, Access, Number of casualties, Emergency services). Evitar descripciones largas no estructuradas.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">3</div><div><strong>Confirmar recepción:</strong> toda información relevante debe ser confirmada por el receptor. Si no hay confirmación, repetir. La comunicación en IMV es en bucle cerrado.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">4</div><div><strong>Actualizar periódicamente:</strong> informar al centro coordinador de cualquier cambio significativo en el número de víctimas, su estado o los recursos disponibles. La imagen que tiene el coordinador debe estar siempre actualizada.</div></li>
+    <li><div class="kp-dot" style="background:var(--blue-mid)">5</div><div><strong>Solicitar recursos antes de necesitarlos:</strong> si anticipas que vas a necesitar más recursos, pedirlos con antelación. La activación tardía de recursos adicionales puede costar vidas.</div></li>
+  </ul>
+
+  <div class="sub-head">Formato METHANE — Informe inicial de IMV</div>
+  <table class="tbl">
+    <thead><tr><th>Letra</th><th>Componente</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>M</strong></td><td>Major Incident — declaración</td><td>"Declaro incidente mayor en la N-340 km 187"</td></tr>
+      <tr><td><strong>E</strong></td><td>Exact location — localización exacta</td><td>"N-340 km 187, dirección Las Palmas, junto al cruce de Telde"</td></tr>
+      <tr><td><strong>T</strong></td><td>Type — tipo de incidente</td><td>"Accidente de tráfico múltiple, colisión entre autobús y dos turismos"</td></tr>
+      <tr><td><strong>H</strong></td><td>Hazards — peligros</td><td>"Gasoil derramado, riesgo de incendio. Tráfico en sentido contrario activo"</td></tr>
+      <tr><td><strong>A</strong></td><td>Access — acceso y punto de mando</td><td>"Acceso desde el norte, punto de mando frente al km 187, arcén derecho"</td></tr>
+      <tr><td><strong>N</strong></td><td>Number of casualties — víctimas</td><td>"Aproximadamente 15 víctimas, al menos 3 atrapadas, 2 en parada"</td></tr>
+      <tr><td><strong>E</strong></td><td>Emergency services — recursos presentes y necesarios</td><td>"En escena: 2 SVB, 1 SVA, bomberos en camino. Necesito: 2 SVAB adicionales, HEMS y Policía Local"</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 8 · GESTIÓN IMV ══ -->
+<div class="section" id="sec-8">
+  <span class="sec-tag">MÓDULO 7 · GESTIÓN DE RECURSOS EN IMV</span>
+  <div class="block-title">
+    <div class="block-num">7I</div>
+    <div class="block-title-text">
+      <h2>Gestión de Múltiples Recursos en IMV</h2>
+      <p>Organización de la escena, roles y circuitos de atención</p>
+    </div>
+  </div>
+
+  <p class="lead">Un IMV bien gestionado es la diferencia entre el caos y un sistema organizado que maximiza la supervivencia. La organización de la escena, la asignación de roles claros y el establecimiento de circuitos de atención son tan importantes como las habilidades clínicas individuales.</p>
+
+  <div class="sub-head">Organización de la escena — Las 5 zonas del IMV</div>
+  <div class="cards c3">
+    <div class="card ar"><div class="card-icon">🔴</div><h3>Zona de rescate</h3><p>Zona caliente — donde están las víctimas. Solo equipos con EPI adecuado. Actuación mínima: torniquetes y extracción. Sin tratamiento avanzado.</p></div>
+    <div class="card aa"><div class="card-icon">🟡</div><h3>Zona de triage</h3><p>Zona templada — clasificación START/SALT de todas las víctimas extraídas. Equipo de triage dedicado. Ninguna víctima sin clasificar antes de pasar a tratamiento.</p></div>
+    <div class="card ag"><div class="card-icon">🟢</div><h3>Zona de tratamiento</h3><p>Zona fría — tratamiento médico avanzado por categorías. Tres sectores: ROJO (tratamiento inmediato), AMARILLO (diferido), VERDE (autotratamiento o asistencia menor).</p></div>
+    <div class="card ab"><div class="card-icon">🚑</div><h3>Zona de evacuación</h3><p>Área de carga de ambulancias y HEMS. Acceso controlado. Cola de vehículos organizada. Registro de destino de cada víctima.</p></div>
+    <div class="card at"><div class="card-icon">🏴</div><h3>Punto de mando</h3><p>Centro de coordinación on-site. Jefe de operaciones sanitarias. Comunicación con centro coordinador y hospitales receptores. Visibilidad de toda la escena.</p></div>
+  </div>
+
+  <div class="sub-head">Roles específicos en la gestión del IMV</div>
+  <table class="tbl">
+    <thead><tr><th>Rol</th><th>Responsabilidad</th><th>Número recomendado</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Jefe de operaciones sanitarias</strong></td><td>Coordinación global, comunicación con central y hospitales, activación de recursos adicionales</td><td>1 — el más experimentado disponible</td></tr>
+      <tr><td><strong>Oficial de triage</strong></td><td>Supervisa el triage primario, reevaluación periódica de categorías</td><td>1 por cada 20 víctimas</td></tr>
+      <tr><td><strong>Médico/enfermero zona ROJO</strong></td><td>Tratamiento avanzado de víctimas inmediatas</td><td>2-3 por sector ROJO</td></tr>
+      <tr><td><strong>Oficial de evacuación</strong></td><td>Gestiona el orden de traslado, asigna vehículos, registra destinos</td><td>1</td></tr>
+      <tr><td><strong>Enlace con bomberos/policía</strong></td><td>Coordinación interservicios, seguridad de escena</td><td>1</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sub-head">Errores más frecuentes en la gestión del IMV</div>
+  <ul class="kp">
+    <li><div class="kp-dot" style="background:var(--red)">✗</div><div><strong>Tratar antes de triagar:</strong> el primer equipo en llegar tiende a empezar a tratar a la víctima más cercana o más grave visible. Error crítico — todos los pacientes deben clasificarse antes de tratar a ninguno.</div></li>
+    <li><div class="kp-dot" style="background:var(--red)">✗</div><div><strong>No establecer punto de mando:</strong> sin un punto de mando claro, cada equipo actúa de forma autónoma sin información del conjunto. La coordinación es imposible.</div></li>
+    <li><div class="kp-dot" style="background:var(--red)">✗</div><div><strong>Enviar todos los ROJOS al mismo hospital:</strong> colapsa el servicio de urgencias y retrasa la atención. Distribuir proporcionalmente entre todos los centros disponibles.</div></li>
+    <li><div class="kp-dot" style="background:var(--red)">✗</div><div><strong>No reevaluar las categorías:</strong> el estado de las víctimas cambia. Un AMARILLO que no recibe atención puede convertirse en ROJO. La reevaluación periódica es obligatoria.</div></li>
+    <li><div class="kp-dot" style="background:var(--amber)">!</div><div><strong>Subestimar el número de víctimas:</strong> el primer informe tiende a subestimar. Multiplicar por 1,5 el número inicial estimado para solicitar recursos. Es más fácil desactivar recursos que activarlos tarde.</div></li>
+  </ul>
+</div>
+
+<!-- ══ 9 · AUTOEVALUACIÓN ══ -->
+<div class="section" id="sec-9">
+  <span class="sec-tag">MÓDULO 7 · AUTOEVALUACIÓN</span>
+  <div class="block-title">
+    <div class="block-num">✓</div>
+    <div class="block-title-text">
+      <h2>Autoevaluación</h2>
+      <p>10 preguntas sobre triage, ATMIST, HEMS y gestión del IMV</p>
+    </div>
+  </div>
+  <p class="lead">Responde antes de ver la solución. No cuenta para la nota del curso.</p>
+  <div id="quiz-container"></div>
+  <div class="quiz-score" id="quiz-score">
+    <div class="sv" id="score-val">0/10</div>
+    <p id="score-msg" style="font-size:13px;color:var(--gray3);margin-top:6px"></p>
+    <button class="btn-quiz sec" onclick="resetQuiz()" style="margin-top:1rem">Reintentar</button>
+  </div>
+</div>
+
+</main>
+
+<div class="doc-footer">
+  <span>RCP302 Formación en Emergencias · EPHTC – Essentials of Prehospital Trauma Care · Módulo 7 · Triage, Traslado y Comunicación · Edición mayo–junio 2026</span>
+  <span>IPMI Official Course · Colegio Oficial de Médicos de Las Palmas</span>
+</div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const navBtns  = document.querySelectorAll('.nb');
+function show(i) {
+  sections.forEach((s,j) => s.classList.toggle('active', j===i));
+  navBtns.forEach((b,j)  => b.classList.toggle('active',  j===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const QUESTIONS = [
+  { text:"En el triage START, ¿cuál es la primera pregunta que debes hacer o comprobar al llegar a una víctima?",
+    opts:["¿Tiene pulso radial?","¿Puede caminar?","¿Está consciente y orientado?","¿Cuál es su frecuencia respiratoria?"],
+    correct:1, feedback:"La primera evaluación del START es la capacidad de caminar. Las víctimas que pueden caminar se clasifican automáticamente como VERDE (lesiones menores) y se dirigen a la zona de concentración. Esto permite clasificar rápidamente al grupo de menor riesgo y dedicar los recursos a las víctimas inmovilizadas."},
+  { text:"Una víctima del triage START no respira. Realizas la apertura de vía aérea con tracción mandibular y empieza a respirar. ¿Cuál es su categoría?",
+    opts:["NEGRO — ya ha sufrido parada respiratoria","ROJO — amenaza vital que ha respondido a una intervención mínima","AMARILLO — puede esperar al tratamiento","VERDE — la apertura de VA es una intervención menor"],
+    correct:1, feedback:"ROJO. Una víctima que no respira pero que empieza a respirar tras la apertura de vía aérea tiene una amenaza vital que ha respondido a la única intervención permitida durante el triage START. Es una categoría ROJO (inmediato) — necesita atención en minutos."},
+  { text:"¿Cuál es la principal diferencia entre el SALT y el START en cuanto a las intervenciones permitidas durante el triage?",
+    opts:["El SALT permite más tiempo por víctima","El SALT incluye explícitamente torniquetes y descompresión torácica como intervenciones de triage, no solo apertura de vía aérea","El SALT tiene menos categorías que el START","El SALT solo se usa en entornos militares"],
+    correct:1, feedback:"El SALT incorpora las intervenciones de salvamento de vida (torniquetes, apertura de VA, descompresión torácica) como parte del proceso de triage, no como tratamiento posterior. Esto lo hace más adecuado cuando hay alta prevalencia de hemorragias exsanguinantes o neumotórax a tensión."},
+  { text:"En el algoritmo de PCR traumática ERC 2021, ¿cuál es la acción que debe realizarse INMEDIATAMENTE después del control de la hemorragia exsanguinante (X)?",
+    opts:["Iniciar compresiones torácicas de calidad","Asegurar la vía aérea con iGel o IOT","Toracostomía bilateral inmediata","Acceso IV/IO y adrenalina"],
+    correct:1, feedback:"Tras el paso X (torniquetes), el siguiente paso es A: asegurar la vía aérea con iGel o IOT + ventilación con O2 al 100%. El orden en PCR-T es X→A→B (toracostomía bilateral)→C→D. Las compresiones son secundarias al tratamiento de las causas reversibles."},
+  { text:"¿Qué componente del ATMIST incluye la hora del accidente y la ETA al hospital?",
+    opts:["A — Age","T — Time","M — Mechanism","S — Signs"],
+    correct:1, feedback:"T (Time/Tiempo) incluye la hora exacta del accidente y el tiempo estimado de llegada (ETA) al hospital. Esta información es crítica porque permite al equipo hospitalario calcular el intervalo trauma-cirugía y tener todo preparado exactamente cuando llega el paciente."},
+  { text:"¿Cuál de los siguientes es un criterio fisiológico de activación HEMS?",
+    opts:["Accidente de moto a más de 30 km/h","Caída desde más de 3 metros","TAS menor de 90 mmHg","Fractura de fémur aislada"],
+    correct:2, feedback:"TAS < 90 mmHg es un criterio fisiológico de activación HEMS inmediata. Los accidentes de moto y las caídas desde altura son criterios de mecanismo (valorar la activación). La fractura de fémur aislada sin inestabilidad hemodinámica no es criterio de activación HEMS por sí sola."},
+  { text:"Un paciente con TCE grave (GCS 7) necesita neurocirugía urgente. El hospital más cercano está a 8 minutos pero no tiene neurocirugía. El hospital con neurocirugía está a 22 minutos. ¿Cuál es la decisión correcta?",
+    opts:["Ir al hospital más cercano para estabilizar y luego trasladar","Ir directamente al hospital con neurocirugía aunque esté más lejos","Esperar el HEMS que tiene ETA de 10 minutos para que decida","Ir al más cercano — siempre es mejor estabilizar primero"],
+    correct:1, feedback:"El traslado directo al hospital con neurocirugía es la decisión correcta. El traslado secundario (hospital A → hospital con neurocirugía) añadiría tiempo crítico al intervalo trauma-cirugía. En un TCE grave con hematoma expansivo, cada minuto cuenta. Si el HEMS tiene ETA de 10 minutos y puede trasladar directamente al centro correcto, esa es una tercera opción a valorar."},
+  { text:"En el formato METHANE, ¿qué significa la letra 'N'?",
+    opts:["Nivel de gravedad del incidente","Número de víctimas estimadas y sus categorías","Necesidades de recursos adicionales","Nombre del jefe de operaciones en escena"],
+    correct:1, feedback:"N (Number of casualties) representa el número de víctimas estimadas y su distribución por categorías. Esta información es la que permite al centro coordinador calcular cuántos recursos sanitarios, ambulancias y hospitales receptores son necesarios para gestionar el incidente."},
+  { text:"¿Cuál es el error más frecuente y peligroso del primer equipo que llega a un IMV?",
+    opts:["No activar el HEMS de forma inmediata","Empezar a tratar a la primera víctima sin triagar antes al resto","No establecer el punto de mando en el lugar correcto","Usar el START en lugar del SALT"],
+    correct:1, feedback:"Tratar antes de triagar es el error más frecuente y peligroso. El primer equipo tiende a empezar a tratar a la víctima más cercana o aparentemente más grave, agotando sus recursos en un solo paciente mientras otros sin clasificar pueden deteriorarse. Todos deben clasificarse antes de tratar a ninguno."},
+  { text:"Una víctima clasificada como AMARILLO en el triage primario lleva 15 minutos esperando en la zona de tratamiento. ¿Qué debe hacerse?",
+    opts:["Mantener la categoría AMARILLO hasta que un médico la evalúe","Reevaluar su estado — puede haber deteriorado a ROJO","Trasladarla automáticamente al hospital más cercano","Reasignarla a VERDE si sigue estable"],
+    correct:1, feedback:"Las categorías de triage deben reevaluarse periódicamente. Un AMARILLO que no recibe atención puede deteriorarse a ROJO. El circuito de reevaluación es una parte esencial de la gestión del IMV que evita que pacientes estables en el triage primario deterioren de forma inadvertida mientras esperan."},
+];
+
+let answers = new Array(QUESTIONS.length).fill(null);
+let score = 0;
+
+function buildQuiz() {
+  const c = document.getElementById('quiz-container');
+  c.innerHTML = '';
+  QUESTIONS.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    card.id = 'q-' + qi;
+    card.innerHTML = `<div class="quiz-q">Pregunta ${qi+1} / ${QUESTIONS.length} — ${q.text}</div>
+      <div class="quiz-opts">${q.opts.map((o,oi)=>`<button class="quiz-opt" onclick="answer(${qi},${oi})">${String.fromCharCode(65+oi)}. ${o}</button>`).join('')}</div>
+      <div class="quiz-fb" id="fb-${qi}"></div>`;
+    c.appendChild(card);
+  });
+}
+
+function answer(qi, oi) {
+  if (answers[qi] !== null) return;
+  answers[qi] = oi;
+  const q = QUESTIONS[qi];
+  const card = document.getElementById('q-' + qi);
+  card.querySelectorAll('.quiz-opt').forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === oi) btn.classList.add('wrong');
+  });
+  const ok = oi === q.correct;
+  if (ok) score++;
+  const fb = document.getElementById('fb-' + qi);
+  fb.innerHTML = `<strong>${ok ? '✓ Correcto' : '✗ Incorrecto'}.</strong> ${q.feedback}`;
+  fb.style.cssText = `background:${ok?'var(--green-lt)':'var(--red-lt)'};color:${ok?'var(--green)':'var(--red)'};padding:.7rem 1rem;border-radius:6px;font-size:12.5px;line-height:1.6`;
+  fb.classList.add('show');
+  if (answers.filter(a => a !== null).length === QUESTIONS.length) {
+    const sc = document.getElementById('quiz-score');
+    sc.style.display = 'block';
+    document.getElementById('score-val').textContent = score + '/10';
+    const pct = score * 10;
+    document.getElementById('score-msg').textContent = pct >= 80
+      ? 'Excelente — Preparado/a para la estación de triage IMV.'
+      : pct >= 60 ? 'Bien — Repasa los apartados de las preguntas incorrectas.'
+      : 'Necesitas refuerzo — Revisa el módulo completo antes de la simulación.';
+    setTimeout(() => sc.scrollIntoView({behavior:'smooth'}), 300);
+  }
+}
+
+function resetQuiz() {
+  answers = new Array(QUESTIONS.length).fill(null);
+  score = 0;
+  buildQuiz();
+  document.getElementById('quiz-score').style.display = 'none';
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
